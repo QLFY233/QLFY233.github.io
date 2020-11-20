@@ -4,9 +4,9 @@
 # ---------------------------------------------------------------
 
 # Site
-title: NexT
-subtitle:
-description:
+title: QLFY
+subtitle:QLFY's blog
+description:为众人抱薪者，不可使其冻毙于风雪。为自由开道者，不可令其困厄于荆棘。
 author: QLFY
 # Support language: de, en, fr-FR, id, ja, ko, pt-BR, pt, ru, zh-Hans, zh-hk, zh-tw
 language: zh-Hans
@@ -79,7 +79,7 @@ plugins:
 favicon: /assets/favicon.ico
 
 # Set default keywords (Use a comma to separate)
-keywords: "Jekyll, NexT"
+keywords: "QLFY,QLFY233,blog,QLFY233's blog,QLFY's blog"
 
 # Set rss to false to disable feed link.
 # Leave rss as empty to use site's feed link.
@@ -90,10 +90,10 @@ rss:
 #since: 2015
 
 # icon between year and author @Footer
-authoricon: heart
+authoricon: atom
 
 # Footer `powered-by` and `theme-info` copyright
-copyright: true
+copyright: false
 
 # ---------------------------------------------------------------
 # SEO Settings
@@ -109,7 +109,7 @@ seo: false
 
 # If true, will add site-subtitle to index page, added in jekyll config.
 # subtitle: Subtitle
-index_with_subtitle: false
+index_with_subtitle: true
 
 # ---------------------------------------------------------------
 # Menu Settings
@@ -134,12 +134,12 @@ menu:
 menu_icons:
   enable: true
   #KeyMapsToMenuItemKey: NameOfTheIconFromFontAwesome
-  home: home
-  about: user
+  home: home-lg
+  about: user-crown
   categories: th
   schedule: calendar
-  tags: tags
-  archives: archive
+  tags: th-list
+  archives: folders
   sitemap: sitemap
   commonweal: heartbeat
 
