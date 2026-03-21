@@ -5,7 +5,7 @@ body, html {
     height: 100%;
     background-color: #000;
     font-family: sans-serif;
-    overflow: hidden;
+    overflow: hidden; /* 仅在最外层隐藏滚动条 */
 }
 
 .scene {
@@ -13,25 +13,23 @@ body, html {
     height: 100vh;
     perspective: 1500px;
     position: relative;
-    overflow: hidden;
+    /* 此处绝对不能有 overflow: hidden，否则会切断 3D 渲染导致背景被强制降维 */
     transform-style: preserve-3d;
 }
 
-/* 天空与地面的精确 3D 定位 */
 .sky, .ground {
     position: absolute;
     width: 400vw;
     height: 400vw;
     left: -150vw;
     top: 50vh;
-    margin-top: -200vw; 
+    margin-top: -200vw;
+    z-index: -1; 
 }
 
 .ground {
-    /* 先向下平移离开视线水平面，再进行 90 度翻折平铺 */
     transform: translateY(30vh) rotateX(90deg);
     background-color: #0d1117;
-    /* 发光网格线，用于凸显 3D 透视和运动轨迹 */
     background-image: 
         linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
@@ -39,7 +37,6 @@ body, html {
 }
 
 .sky {
-    /* 先向上平移离开视线水平面，再进行 90 度翻折平铺 */
     transform: translateY(-30vh) rotateX(-90deg);
     background: radial-gradient(circle at center, #1a2a3a 0%, #000 80%);
 }
