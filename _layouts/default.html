@@ -3,15 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ page.title | default: site.title }}</title>
-    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
 </head>
 <body>
-    <header>
-        <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
-    </header>
-    
-    <main>
-        {{ content }}
-    </main>
+    <div class="scene">
+        <div class="cube" id="cube">
+            <div class="face face-front" id="face-front">
+                <header style="padding: 1rem 2rem; border-bottom: 1px solid #eee;">
+                    <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
+                </header>
+                <main style="padding: 2rem;">
+                    {{ content }}
+                </main>
+            </div>
+            <div class="face face-right" id="face-right"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('click', async (e) => {
+            const link = e.target.closest('a');
+            // 仅拦截本站内的链接，排除外部链接
+            if (!link || link.host !== window.location.host) return;
+            
+            e.preventDefault();
+            const url = link.href;
+            
+            const cube = document.getElementById('cube');
+            const rightFace = document.getElementById('face-right');
+            const frontFace = document.getElementById('face-front');
+            
+            // 1. 在后台请求目标页面的 HTML
+            const response = await fetch(url);
+            const html = await response.text();
+            
+            // 2. 解析获取的 HTML，提取标题和主体内容
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newTitle = doc.title;
+            const newHeader = doc.querySelector('header').outerHTML;
+            const newMain = doc.querySelector('main').outerHTML;
+            
+            // 3. 将新内容预加载到立方体的侧面
+            rightFace.innerHTML = newHeader + newMain;
+            
+            // 4. 执行 3D 动画序列
+            cube.style.transition = 'transform 0.8s ease-in-out';
+            // 动作 1: 摄像头后退 (将立方体推远)
+            cube.style.transform = 'translateZ(-100vw) rotateY(0deg)'; 
+            
+            setTimeout(() => {
+                // 动作 2: 立方体旋转露出侧面
+                cube.style.transform = 'translateZ(-100vw) rotateY(-90deg)';
+                
+                setTimeout(() => {
+                    // 动作 3: 摄像头前进 (拉近刚转过来的侧面)
+                    cube.style.transform = 'translateZ(-50vw) rotateY(-90deg)';
+                    
+                    // 5. 动画结束后，在视觉无感的情况下重置 DOM 状态
+                    setTimeout(() => {
+                        cube.style.transition = 'none'; // 临时关闭过渡动画
+                        // 将新内容直接放入正面
+                        frontFace.innerHTML = rightFace.innerHTML; 
+                        // 瞬间将立方体转回正面
+                        cube.style.transform = 'translateZ(-50vw) rotateY(0deg)';
+                        
+                        // 更新浏览器状态栏和历史记录
+                        document.title = newTitle;
+                        history.pushState(null, '', url);
+                        
+                        // 强制重绘并恢复过渡动画
+                        void cube.offsetWidth;
+                        cube.style.transition = 'transform 0.8s ease-in-out';
+                        
+                        // 清空侧面以备下一次使用
+                        rightFace.innerHTML = '';
+                    }, 800);
+                    
+                }, 800);
+            }, 800);
+        });
+
+        // 处理浏览器返回键的逻辑
+        window.addEventListener('popstate', () => {
+            location.reload();
+        });
+    </script>
 </body>
 </html>
