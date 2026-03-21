@@ -3,15 +3,44 @@ body, html {
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden; /* 隐藏浏览器默认滚动条，将滚动限制在立方体表面 */
-    background-color: #111; /* 摄像头后退时暴露的背景色 */
+    /* 背景色设为深色，作为摄像头后退时暴露的边界 */
+    background-color: #0d1117; 
     font-family: sans-serif;
+    overflow: hidden;
 }
 
 .scene {
     width: 100vw;
     height: 100vh;
-    perspective: 1200px; /* 定义 3D 镜头的焦距 */
+    perspective: 1500px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 基础 3D 元素样式 */
+.ground, .sky {
+    position: absolute;
+    /* 需要极其巨大的尺寸以覆盖整个视野 */
+    width: 500vw;
+    height: 500vw;
+    left: -200vw;
+    top: -200vw;
+    transform-style: preserve-3d;
+}
+
+/* 地面：使用径向渐变模拟远处的光线衰减 */
+.ground {
+    /* 将平面旋转 90 度并在 Y 轴向下平移以抵消摄像头高度 */
+    transform: rotateX(90deg) translateY(250vw); 
+    background: radial-gradient(circle at center, #222 0%, #000 70%);
+    box-shadow: 0 0 100px rgba(0,0,0,0.5) inset;
+}
+
+/* 天空：使用垂直线性渐变 */
+.sky {
+    /* 将平面旋转 90 度并在 Y 轴向上平移 */
+    transform: rotateX(90deg) translateY(-250vw);
+    background: linear-gradient(to bottom, #0a0e14 0%, #1a1f26 100%);
 }
 
 .cube {
@@ -19,29 +48,51 @@ body, html {
     height: 100%;
     position: relative;
     transform-style: preserve-3d;
-    /* 初始状态：通过 Z 轴负向平移抵消表面的正向平移，使其在 2D 视角下满屏显示 */
     transform: translateZ(-50vw) rotateY(0deg);
-    transition: transform 0.8s ease-in-out;
+    /* 增加一个全局阴影，增强立体感 */
+    filter: drop-shadow(0 0 50px rgba(0,0,0,0.3));
 }
 
 .face {
     position: absolute;
     width: 100vw;
     height: 100vh;
+    backface-visibility: hidden;
     background-color: #ffffff;
-    overflow-y: auto; /* 允许文章页面内部滚动 */
-    box-sizing: border-box;
-    backface-visibility: hidden; /* 隐藏立方体背面的反向渲染 */
+    overflow: hidden; 
 }
 
-/* 正面：当前页面 */
+.content-scroll {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1; /* 保证内容处于光照遮罩上方 */
+}
+
+/* 正面 */
 .face-front {
     transform: rotateY(0deg) translateZ(50vw);
 }
 
-/* 侧面：右侧页面 */
+/* 侧面 */
 .face-right {
     transform: rotateY(90deg) translateZ(50vw);
+}
+
+/* 新增: 光照遮罩 */
+.lighting-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* 允许点击穿透 */
+    z-index: 2; /* 位于内容之上，遮挡内容使其变暗 */
+    transition: background 0.8s ease-in-out;
+    /* 默认正面是完全透明的（亮的） */
+    background: transparent;
 }
 
 /* 基础文章链接样式修饰 */
