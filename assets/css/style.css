@@ -16,25 +16,35 @@ body, html {
     transform-style: preserve-3d;
 }
 
+/* 天空和地面的基础尺寸设定，加宽以防止旋转时看到边界 */
+.sky, .ground {
+    position: absolute;
+    left: -100vw;
+    width: 300vw;
+    height: 400vw;
+    z-index: -1; 
+}
+
 .sky {
-    /* 将 Y 轴平移从 -50vh 加大到 -100vh，将天空大幅度向上推 */
-    transform: translateY(-100vh) rotateX(-90deg);
+    /* 将平面的起始位置严格绑定在屏幕最上边缘 */
+    bottom: 100%;
+    transform-origin: center bottom;
+    /* 向上推 2vh 作为安全隔离带，然后向内翻折 90 度 */
+    transform: translateY(-2vh) rotateX(90deg);
     background: radial-gradient(circle at center, #1a2a3a 0%, #000 80%);
 }
 
 .ground {
-    /* 将 Y 轴平移从 50vh 加大到 100vh，将地面大幅度向下推，避开网页边缘 */
-    transform: translateY(100vh) rotateX(90deg);
+    /* 将平面的起始位置严格绑定在屏幕最下边缘 */
+    top: 100%;
+    transform-origin: center top;
+    /* 向下推 2vh 作为安全隔离带，然后向内翻折 90 度 */
+    transform: translateY(2vh) rotateX(-90deg);
     background-color: #0d1117;
     background-image: 
         linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
     background-size: 80px 80px;
-}
-
-.sky {
-    transform: translateY(-50vh) rotateX(-90deg);
-    background: radial-gradient(circle at center, #1a2a3a 0%, #000 80%);
 }
 
 .cube {
