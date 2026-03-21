@@ -5,7 +5,7 @@ body, html {
     height: 100%;
     background-color: #000;
     font-family: sans-serif;
-    overflow: hidden; /* 仅在最外层隐藏滚动条 */
+    overflow: hidden;
 }
 
 .scene {
@@ -13,7 +13,6 @@ body, html {
     height: 100vh;
     perspective: 1500px;
     position: relative;
-    /* 此处绝对不能有 overflow: hidden，否则会切断 3D 渲染导致背景被强制降维 */
     transform-style: preserve-3d;
 }
 
@@ -28,7 +27,7 @@ body, html {
 }
 
 .ground {
-    transform: translateY(30vh) rotateX(90deg);
+    transform: translateY(50vh) rotateX(90deg);
     background-color: #0d1117;
     background-image: 
         linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
@@ -37,7 +36,7 @@ body, html {
 }
 
 .sky {
-    transform: translateY(-30vh) rotateX(-90deg);
+    transform: translateY(-50vh) rotateX(-90deg);
     background: radial-gradient(circle at center, #1a2a3a 0%, #000 80%);
 }
 

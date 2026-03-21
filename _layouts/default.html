@@ -83,7 +83,6 @@
                         setTimeout(() => {
                             cube.style.transition = 'none';
                             
-                            // 临时关闭遮罩动画，瞬间应用状态，避免褪色引发闪白
                             overlayFront.style.transition = 'none';
                             overlayFront.style.background = 'transparent';
                             overlayRight.style.transition = 'none';
@@ -92,7 +91,6 @@
                             contentFront.innerHTML = contentRight.innerHTML;
                             cube.style.transform = 'translateZ(-50vw) rotateY(0deg)';
                             
-                            // 触发重绘并恢复动画
                             void overlayFront.offsetWidth;
                             overlayFront.style.transition = 'background 0.8s ease-in-out';
                             overlayRight.style.transition = 'background 0.8s ease-in-out';
