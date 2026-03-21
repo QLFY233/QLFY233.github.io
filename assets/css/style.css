@@ -16,18 +16,15 @@ body, html {
     transform-style: preserve-3d;
 }
 
-.sky, .ground {
-    position: absolute;
-    width: 400vw;
-    height: 400vw;
-    left: -150vw;
-    top: 50vh;
-    margin-top: -200vw;
-    z-index: -1; 
+.sky {
+    /* 将 Y 轴平移从 -50vh 加大到 -100vh，将天空大幅度向上推 */
+    transform: translateY(-100vh) rotateX(-90deg);
+    background: radial-gradient(circle at center, #1a2a3a 0%, #000 80%);
 }
 
 .ground {
-    transform: translateY(50vh) rotateX(90deg);
+    /* 将 Y 轴平移从 50vh 加大到 100vh，将地面大幅度向下推，避开网页边缘 */
+    transform: translateY(100vh) rotateX(90deg);
     background-color: #0d1117;
     background-image: 
         linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
