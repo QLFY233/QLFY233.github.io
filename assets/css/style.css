@@ -16,35 +16,32 @@ body, html {
     transform-style: preserve-3d;
 }
 
-/* 天空和地面的基础尺寸设定，加宽以防止旋转时看到边界 */
+/* 天空与地面的精确 3D 定位 */
 .sky, .ground {
     position: absolute;
-    left: -100vw;
-    width: 300vw;
+    /* 采用极大的尺寸铺满视野 */
+    width: 400vw;
     height: 400vw;
-    z-index: -1; 
-}
-
-.sky {
-    /* 将平面的起始位置严格绑定在屏幕最上边缘 */
-    bottom: 100%;
-    transform-origin: center bottom;
-    /* 向上推 2vh 作为安全隔离带，然后向内翻折 90 度 */
-    transform: translateY(-2vh) rotateX(90deg);
-    background: radial-gradient(circle at center, #1a2a3a 0%, #000 80%);
+    left: -150vw;
+    top: 50vh;
+    margin-top: -200vw; 
+    z-index: -1;
 }
 
 .ground {
-    /* 将平面的起始位置严格绑定在屏幕最下边缘 */
-    top: 100%;
-    transform-origin: center top;
-    /* 向下推 2vh 作为安全隔离带，然后向内翻折 90 度 */
-    transform: translateY(2vh) rotateX(-90deg);
+    /* 将地面平移至 60vh，即屏幕底部 (50vh) 往下 10vh 的位置，与网页完全分离 */
+    transform: translateY(60vh) rotateX(90deg);
     background-color: #0d1117;
     background-image: 
         linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
     background-size: 80px 80px;
+}
+
+.sky {
+    /* 将天空平移至 -60vh，即屏幕顶部 (-50vh) 往上 10vh 的位置 */
+    transform: translateY(-60vh) rotateX(-90deg);
+    background: radial-gradient(circle at center, #1a2a3a 0%, #000 80%);
 }
 
 .cube {
