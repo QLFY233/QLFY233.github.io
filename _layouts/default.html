@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
     <meta charset="UTF-8">
     <title>{{ page.title | default: site.title }}</title>
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
+
 <body>
     <div class="scene">
         <div class="sky"></div>
@@ -36,7 +38,7 @@
         document.addEventListener('click', async (e) => {
             const link = e.target.closest('a');
             if (!link || link.host !== window.location.host || isAnimating) return;
-            
+
             e.preventDefault();
             const url = link.href;
             if (url === window.location.href) return;
@@ -50,27 +52,27 @@
             // 获取光照遮罩
             const overlayFront = document.getElementById('overlay-front');
             const overlayRight = document.getElementById('overlay-right');
-            
+
             try {
                 const response = await fetch(url);
                 const html = await response.text();
-                
+
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 const newTitle = doc.title;
                 const newHeader = doc.querySelector('header').outerHTML;
                 const newMain = doc.querySelector('main').outerHTML;
-                
+
                 contentRight.innerHTML = newHeader + newMain;
                 faceRight.style.visibility = 'visible';
-                
+
                 // 默认正面是亮的，侧面是暗的
                 overlayFront.style.background = 'transparent';
                 overlayRight.style.background = 'rgba(0,0,0,0.8)'; // 暗
 
                 cube.style.transition = 'transform 0.5s ease-in';
-                cube.style.transform = 'translateZ(-100vw) rotateY(0deg)'; 
-                
+                cube.style.transform = 'translateZ(-100vw) rotateY(0deg)';
+
                 setTimeout(() => {
                     cube.style.transition = 'transform 0.8s ease-in-out';
                     cube.style.transform = 'translateZ(-100vw) rotateY(-90deg)';
@@ -78,31 +80,34 @@
                     // 动作 2 期间更新光照：旋转时正面变暗，侧面变亮
                     overlayFront.style.background = 'rgba(0,0,0,0.8)'; // 变暗
                     overlayRight.style.background = 'transparent'; // 变亮
-                    
+
                     setTimeout(() => {
                         cube.style.transition = 'transform 0.5s ease-out';
                         cube.style.transform = 'translateZ(-50vw) rotateY(-90deg)';
-                        
+
                         setTimeout(() => {
                             // 4. 动画结束，重置
                             cube.style.transition = 'none';
                             contentFront.innerHTML = contentRight.innerHTML;
                             cube.style.transform = 'translateZ(-50vw) rotateY(0deg)';
-                            
+
+                            // 【新增这一行】：将正面的阴影遮罩彻底清空，恢复透明
+                            overlayFront.style.background = 'transparent';
+
                             // 更新 URL 和标题
                             document.title = newTitle;
                             history.pushState(null, '', url);
-                            
+
                             contentRight.innerHTML = '';
                             faceRight.style.visibility = 'hidden';
                             contentFront.scrollTop = 0;
-                            
+
                             void cube.offsetWidth;
                             isAnimating = false;
                         }, 500);
                     }, 800);
                 }, 500);
-                
+
             } catch (error) {
                 window.location.href = url;
             }
@@ -113,4 +118,5 @@
         });
     </script>
 </body>
+
 </html>

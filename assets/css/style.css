@@ -14,36 +14,34 @@ body, html {
     perspective: 1500px;
     position: relative;
     overflow: hidden;
-    /* 确保环境元素与立方体处于同一个 3D 坐标系 */
     transform-style: preserve-3d;
 }
 
 /* 天空与地面的精确 3D 定位 */
 .sky, .ground {
     position: absolute;
-    width: 300vw;
-    height: 300vw;
-    left: -100vw;
+    width: 400vw;
+    height: 400vw;
+    left: -150vw;
     top: 50vh;
-    margin-top: -150vw; /* 将平面的几何中心对准屏幕中央 */
-    backface-visibility: hidden;
+    margin-top: -200vw; 
 }
 
 .ground {
-    /* 沿 X 轴放倒，并向下推至屏幕底部 (50vh) */
-    transform: rotateX(90deg) translateZ(50vh);
+    /* 先向下平移离开视线水平面，再进行 90 度翻折平铺 */
+    transform: translateY(30vh) rotateX(90deg);
     background-color: #0d1117;
-    /* 添加发光网格线，使 3D 透视和摄像机移动轨迹清晰可见 */
+    /* 发光网格线，用于凸显 3D 透视和运动轨迹 */
     background-image: 
-        linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
-    background-size: 100px 100px;
+        linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+    background-size: 80px 80px;
 }
 
 .sky {
-    /* 沿 X 轴仰起，并向上推至屏幕顶部 (50vh) */
-    transform: rotateX(-90deg) translateZ(50vh);
-    background: radial-gradient(circle at center, #1a2a3a 0%, #000 70%);
+    /* 先向上平移离开视线水平面，再进行 90 度翻折平铺 */
+    transform: translateY(-30vh) rotateX(-90deg);
+    background: radial-gradient(circle at center, #1a2a3a 0%, #000 80%);
 }
 
 .cube {
@@ -52,7 +50,6 @@ body, html {
     position: relative;
     transform-style: preserve-3d;
     transform: translateZ(-50vw) rotateY(0deg);
-    /* 此处严禁添加 filter 或 opacity，否则会立刻触发 2D 降级 */
 }
 
 .face {
