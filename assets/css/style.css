@@ -16,10 +16,24 @@ body, html {
     transform-style: preserve-3d;
 }
 
-/* 天空与地面的精确 3D 定位 */
+/* 1. 环境光源：左上角深处的恒星 */
+.sun {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: #ffffff;
+    border-radius: 50%;
+    /* 放置在空间的左上角深处 */
+    transform: translate3d(-30vw, -20vh, -150vw);
+    /* 利用多层阴影制作光晕和泛光效果 */
+    box-shadow: 
+        0 0 100px 50px rgba(255, 255, 255, 0.8),
+        0 0 300px 150px rgba(100, 150, 255, 0.4);
+    z-index: -2;
+}
+
 .sky, .ground {
     position: absolute;
-    /* 采用极大的尺寸铺满视野 */
     width: 400vw;
     height: 400vw;
     left: -150vw;
@@ -29,7 +43,6 @@ body, html {
 }
 
 .ground {
-    /* 将地面平移至 60vh，即屏幕底部 (50vh) 往下 10vh 的位置，与网页完全分离 */
     transform: translateY(60vh) rotateX(90deg);
     background-color: #0d1117;
     background-image: 
@@ -39,9 +52,9 @@ body, html {
 }
 
 .sky {
-    /* 将天空平移至 -60vh，即屏幕顶部 (-50vh) 往上 10vh 的位置 */
     transform: translateY(-60vh) rotateX(-90deg);
-    background: radial-gradient(circle at center, #1a2a3a 0%, #000 80%);
+    /* 调整天空的渐变，配合光源的位置显得更自然 */
+    background: radial-gradient(circle at 30% 40%, #1a2a4a 0%, #000 70%);
 }
 
 .cube {
@@ -50,6 +63,23 @@ body, html {
     position: relative;
     transform-style: preserve-3d;
     transform: translateZ(-50vw) rotateY(0deg);
+}
+
+/* 2. 动态体积阴影：嵌套在立方体内部，完美继承它的 3D 运动轨迹 */
+.cube-shadow {
+    position: absolute;
+    width: 100vw;
+    height: 100vw;
+    left: 0;
+    /* 定位到立方体的底部 */
+    top: 50vh; 
+    /* 向下推 9.5vh (刚好悬浮在地板 10vh 之上避免穿模)，并根据光源向右后方偏移投射 */
+    transform: translateY(9.5vh) translateX(10vw) translateZ(-10vw) rotateX(90deg);
+    background: rgba(0, 0, 0, 0.75);
+    /* 极度模糊以模拟真实的光线散射边缘 */
+    filter: blur(50px);
+    pointer-events: none;
+    backface-visibility: hidden;
 }
 
 .face {
@@ -77,6 +107,7 @@ body, html {
     transform: rotateY(90deg) translateZ(50vw);
 }
 
+/* 3. 光照材质层：准备接受 JS 的动态着色 */
 .lighting-overlay {
     position: absolute;
     top: 0;
@@ -86,7 +117,6 @@ body, html {
     pointer-events: none;
     z-index: 2;
     transition: background 0.8s ease-in-out;
-    background: transparent;
 }
 
 a {

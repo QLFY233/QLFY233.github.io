@@ -7,10 +7,13 @@
 </head>
 <body>
     <div class="scene">
+        <div class="sun"></div>
         <div class="sky"></div>
         <div class="ground"></div>
 
         <div class="cube" id="cube">
+            <div class="cube-shadow"></div>
+
             <div class="face face-front">
                 <div class="content-scroll" id="content-front">
                     <header style="padding: 1rem 2rem; border-bottom: 1px solid #eee;">
@@ -32,6 +35,15 @@
 
     <script>
         let isAnimating = false;
+
+        // 定义逼真的光照材质渐变 (假设光源在左上角)
+        // 迎光面：左上角产生微弱的高光泛白，右下角自然衰减变暗
+        const lightFront = 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.2) 100%)';
+        // 侧背光面：转过去后无法受光，陷入极深的阴影
+        const shadowDeep = 'linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%)';
+
+        // 初始化正面的默认光照
+        document.getElementById('overlay-front').style.background = lightFront;
 
         document.addEventListener('click', async (e) => {
             const link = e.target.closest('a');
@@ -63,34 +75,41 @@
                 contentRight.innerHTML = newHeader + newMain;
                 faceRight.style.visibility = 'visible';
                 
-                overlayFront.style.background = 'transparent';
-                overlayRight.style.background = 'rgba(0,0,0,0.8)';
+                // 动作开始前：正面迎光，侧面深阴影
+                overlayFront.style.background = lightFront;
+                overlayRight.style.background = shadowDeep;
 
+                // 1. 摄像头后退
                 cube.style.transition = 'transform 0.5s ease-in';
                 cube.style.transform = 'translateZ(-100vw) rotateY(0deg)'; 
                 
                 setTimeout(() => {
+                    // 2. 立方体开始向左旋转
                     cube.style.transition = 'transform 0.8s ease-in-out';
                     cube.style.transform = 'translateZ(-100vw) rotateY(-90deg)';
 
-                    overlayFront.style.background = 'rgba(0,0,0,0.8)';
-                    overlayRight.style.background = 'transparent';
+                    // 【核心光照变化】：旋转时，正面转为背光（变深邃），侧面转为迎光（变亮丽）
+                    overlayFront.style.background = shadowDeep;
+                    overlayRight.style.background = lightFront;
                     
                     setTimeout(() => {
+                        // 3. 摄像头拉近新的面
                         cube.style.transition = 'transform 0.5s ease-out';
                         cube.style.transform = 'translateZ(-50vw) rotateY(-90deg)';
                         
                         setTimeout(() => {
+                            // 4. 动画结束，瞬间重置 DOM 与光照状态
                             cube.style.transition = 'none';
-                            
                             overlayFront.style.transition = 'none';
-                            overlayFront.style.background = 'transparent';
                             overlayRight.style.transition = 'none';
-                            overlayRight.style.background = 'rgba(0,0,0,0.8)';
                             
+                            // 新内容塞入正面，正面恢复迎光状态
                             contentFront.innerHTML = contentRight.innerHTML;
                             cube.style.transform = 'translateZ(-50vw) rotateY(0deg)';
+                            overlayFront.style.background = lightFront;
+                            overlayRight.style.background = shadowDeep;
                             
+                            // 恢复动画属性
                             void overlayFront.offsetWidth;
                             overlayFront.style.transition = 'background 0.8s ease-in-out';
                             overlayRight.style.transition = 'background 0.8s ease-in-out';
